@@ -9,7 +9,6 @@ import Login from './pages/Login'
 import FallbackUI from './components/shared/FallbackUI'
 import { useSelector } from 'react-redux'
 import { Switch } from "@nextui-org/react";
-import useDarkMode from "use-dark-mode";
 import { BsMoonStarsFill, BsSun } from 'react-icons/bs'
 import PublicRoute from './components/RouteProtection/publicRoute';
 import ProtectedRoute from './components/RouteProtection/protectedRoute';
@@ -18,16 +17,29 @@ import Test from './pages/test';
 
 function App() {
   const isLoading = useSelector((state) => state.alerts.loading)
-  const darkMode = useDarkMode(false);
+  let darkMode = localStorage.getItem('darkMode') === 'true';
+
+  function darkModeHandler() {
+    console.log(darkMode);
+    if (darkMode) {
+      localStorage.setItem('darkMode', 'false');
+    } else {
+      localStorage.setItem('darkMode', 'true');
+    }
+  
+    // Update the darkMode variable after toggling
+    darkMode = !darkMode;
+  }
+  
   const check = JSON.parse(localStorage.getItem('check'))
   const isAdmin = check?.isAdmin
   return (
-    <main className={`${darkMode.value ? 'dark' : ''} text-foreground bg-background`}>
+    <main className={`${darkMode ? 'dark' : ''} text-foreground bg-background`}>
       <Switch
         className='fixed left-5 lg:left-auto right-auto lg:right-5 top-5'
         defaultSelected
         size="lg"
-        onChange={darkMode.toggle}
+        onChange={darkModeHandler}
         color="secondary"
         thumbIcon={({ isSelected, className }) =>
           isSelected ? (
