@@ -8,21 +8,18 @@ import { userModel } from "../models/userModel.js";
 //funciton to checkin the employee
 export const checkIn = async (req, res) => {
   const { checkInTime, userId } = req.body;
+  console.log(req.body)
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    console.log("today", today);
-    console.log("body", req.body);
     const user = await userModel.findById(userId);
     const existingDocument = await attendanceModel.findOne({ date: today });
-    user.isCheckedIn = true;
-    user.lastCheckInTime = checkInTime;
-    user.lastCheckedInDate = today;
     if (existingDocument) {
       const isUserAlreadyCheckedIn = existingDocument.Attendees.some(
         (attendee) => attendee.userId === userId
       );
       if (isUserAlreadyCheckedIn) {
+        console.log('areadt')
         // Handle the case where the user is already checked in
         return res
           .status(200)
@@ -50,8 +47,12 @@ export const checkIn = async (req, res) => {
       });
       await newDocument.save();
     }
+    user.isCheckedIn = true;
+    user.lastCheckInTime = checkInTime;
+    user.lastCheckedInDate = today;
     await user.save();
-    res.status(200).send({ msg: "check-in succesfull", success: true });
+    console.log(user)
+    res.status(200).send({ msg: "check-in succesfull", success: true,user });
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "error at employee checkin", success: false });

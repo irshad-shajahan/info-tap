@@ -78,13 +78,13 @@ function AddMember() {
             Setloading(false)
         })
     };
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+        const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        };
 
     // Function to handle form submission
     const handleSubmit = async () => {

@@ -8,6 +8,11 @@ import { checkIn } from "../controllers/attendenceController.js";
 router.post('/login',loginController)
 router.get('/getUserData',authenticateMiddleware,getUserDetails)
 router.post('/check-in',authenticateMiddleware,checkIn)
+router.post('/test',(req,res)=>{
+    console.log(req.body)
+    console.log('reached')
+    res.status(200).send({msg:'hello gello'})
+})
 
 
 export default router;

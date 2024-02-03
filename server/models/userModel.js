@@ -33,6 +33,48 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  lateComings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'lateComing',
+    },
+  ],
+  appliedLeaves: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'leaveApplication',
+    },
+  ],
+  totalLeavesTaken: {
+    type: Number,
+    default: 0,
+  },
+  monthlyLeavesTaken: [
+    {
+      month: {
+        type: Number, // 1 to 12 representing January to December
+      },
+      totalLeaves: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
+  totalLateOccurrences: {
+    type: Number,
+    default: 0,
+  },
+  monthlyLateOccurrences: [
+    {
+      month: {
+        type: Number, // 1 to 12 representing January to December
+      },
+      totalOccurrences: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
   profileImage: {
     type: String,
   },

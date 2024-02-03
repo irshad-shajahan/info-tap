@@ -9,22 +9,21 @@ export const loginController = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await userModel.findOne({ email });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    console.log(user)
+    if(!user){
+      return res.status(200).send({msg:'Invalid email or password',success:false})
+    }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     if (!user.defaultPassChanged) {
-      console.log("def");
       if (password === "tapemp123") {
         return res.status(200).send({
           message: `Login Succesful`,
           success: true,
           token,
-          response: user,
+          user
         });
       }
     }
-    console.log(user);
-    if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res
@@ -33,15 +32,11 @@ export const loginController = async (req, res) => {
       }
 
       return res.status(200).send({
-        message: `Login Succesful`,
+        message: `You have succesfully logged in`,
         success: true,
         token,
-        response: user,
+        user
       });
-    } else {
-      res.status(200).send({ msg: "Invalid email or password" });
-    }
-    console.log(user);
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "error occurred at login", success: false });
@@ -54,6 +49,7 @@ export const getUserDetails = async (req, res) => {
   const { userId } = req.body;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  console.log(userId)
   try {
     const user = await userModel.findById(userId);
     if (!user) {
@@ -64,9 +60,11 @@ export const getUserDetails = async (req, res) => {
       if (!user.lastCheckedInDate || user.lastCheckedInDate.toDateString() !== today.toDateString()) {
         user.isCheckedIn = false;
       }
-      res.status(200).send({ response: user, success: true });
+      await user.save();
+      res.status(200).send({ user, success: true });
     }
   } catch (err) {
+    console.log(err)
     res
       .status(500)
       .send({ msg: "error while fetching user details", success: false });
